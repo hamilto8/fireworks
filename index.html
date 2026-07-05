@@ -42,104 +42,8 @@
             }
         }
     </script>
-    <style>
-        /* Custom UI enhancements & Scrollbars */
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #050814;
-            user-select: none;
-            -webkit-user-select: none;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-
-        canvas {
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        .glass-panel {
-            background: rgba(11, 19, 43, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-        }
-
-        .glass-card {
-            background: rgba(29, 53, 87, 0.45);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Custom range slider styling */
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-        }
-        input[type=range]:focus {
-            outline: none;
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 6px;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 9999px;
-            transition: background 0.2s ease;
-        }
-        input[type=range]:hover::-webkit-slider-runnable-track {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        input[type=range]::-webkit-slider-thumb {
-            height: 18px;
-            width: 18px;
-            border-radius: 50%;
-            background: #FFD700;
-            cursor: pointer;
-            -webkit-appearance: none;
-            margin-top: -6px;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-            transition: transform 0.1s ease, background-color 0.2s ease;
-        }
-        input[type=range]::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            background: #ffffff;
-        }
-
-        /* Shutter flash animation for taking photos */
-        @keyframes photoFlash {
-            0% { opacity: 0.9; }
-            100% { opacity: 0; }
-        }
-        .flash-active {
-            animation: photoFlash 0.6s ease-out forwards;
-        }
-
-        /* Banner announcement glow */
-        .text-glow-gold {
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 30px rgba(230, 57, 70, 0.6);
-        }
-        .text-glow-blue {
-            text-shadow: 0 0 15px rgba(56, 182, 255, 0.8), 0 0 30px rgba(29, 53, 87, 0.8);
-        }
-
-        /* Hide scrollbar for clean modal view */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+    <!-- Modular Application Stylesheet -->
+    <link rel="stylesheet" href="src/styles/main.css" />
 </head>
 <body class="text-white relative w-full h-screen overflow-hidden">
 
@@ -153,7 +57,7 @@
     <header class="relative z-10 w-full px-4 py-3 md:px-6 flex flex-col md:flex-row items-center justify-between gap-3 pointer-events-none transition-opacity duration-300" id="topHeader">
         <!-- Logo & Title -->
         <div class="flex items-center gap-3 pointer-events-auto">
-            <div class="relative group cursor-pointer" onclick="app.launchRandomFirework()">
+            <div id="btnLaunchRandomLogo" class="relative group cursor-pointer" title="Click to launch a firework!">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 via-white to-blue-600 p-[2px] shadow-[0_0_15px_rgba(230,57,70,0.5)] animate-float">
                     <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center text-xl">
                         🎇
@@ -172,8 +76,8 @@
             </div>
         </div>
 
-        <!-- Center Prompt Badge (Disappears on interaction or can be clicked) -->
-        <div id="instructionBadge" class="pointer-events-auto cursor-pointer glass-panel px-4 py-2 rounded-full border border-yellow-400/30 flex items-center gap-2 animate-pulse-slow shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:scale-105 transition-all" onclick="app.launchRandomFirework()">
+        <!-- Center Prompt Badge -->
+        <div id="instructionBadge" class="pointer-events-auto cursor-pointer glass-panel px-4 py-2 rounded-full border border-yellow-400/30 flex items-center gap-2 animate-pulse-slow shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:scale-105 transition-all">
             <span class="text-yellow-400 text-sm animate-bounce">👆</span>
             <span class="text-xs md:text-sm font-semibold text-yellow-100 tracking-wide">Click or tap anywhere in the sky to launch!</span>
         </div>
@@ -181,31 +85,31 @@
         <!-- Right Quick Actions -->
         <div class="flex items-center gap-2 pointer-events-auto">
             <!-- Sound Toggle -->
-            <button id="soundBtn" onclick="app.toggleSound()" class="glass-panel px-3 py-2 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 hover:bg-white/10 active:scale-95 transition-all border border-white/20" title="Toggle Audio (M)">
+            <button id="btnToggleSound" class="glass-panel px-3 py-2 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 hover:bg-white/10 active:scale-95 transition-all border border-white/20" title="Toggle Audio (M)">
                 <span id="soundIcon">🔊</span>
                 <span id="soundLabel" class="hidden sm:inline">Sound On</span>
             </button>
 
             <!-- Fun Facts Button -->
-            <button onclick="app.openTriviaModal()" class="glass-panel px-3 py-2 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-1.5 text-yellow-300 hover:text-white hover:bg-yellow-500/20 active:scale-95 transition-all border border-yellow-500/30" title="4th of July Trivia">
+            <button id="btnOpenTrivia" class="glass-panel px-3 py-2 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-1.5 text-yellow-300 hover:text-white hover:bg-yellow-500/20 active:scale-95 transition-all border border-yellow-500/30" title="4th of July Trivia">
                 <span>💡</span>
                 <span class="hidden sm:inline">Fun Facts</span>
             </button>
 
             <!-- Capture Screenshot Button -->
-            <button onclick="app.captureScreenshot()" class="glass-panel px-3 py-2 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-1.5 text-cyan-300 hover:text-white hover:bg-cyan-500/20 active:scale-95 transition-all border border-cyan-500/30" title="Download Screenshot (C)">
+            <button id="btnCapture" class="glass-panel px-3 py-2 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-1.5 text-cyan-300 hover:text-white hover:bg-cyan-500/20 active:scale-95 transition-all border border-cyan-500/30" title="Download Screenshot (C)">
                 <span>📸</span>
                 <span class="hidden sm:inline">Capture</span>
             </button>
 
-            <!-- Toggle UI Button for clean viewing -->
-            <button onclick="app.toggleUI()" class="glass-panel p-2 rounded-xl text-xs md:text-sm hover:bg-white/10 active:scale-95 transition-all text-slate-300" title="Hide/Show Controls (H)">
+            <!-- Toggle UI Button -->
+            <button id="btnToggleUI" class="glass-panel p-2 rounded-xl text-xs md:text-sm hover:bg-white/10 active:scale-95 transition-all text-slate-300" title="Hide/Show Controls (H)">
                 👁️
             </button>
         </div>
     </header>
 
-    <!-- GRAND FINALE BANNER ANNOUNCEMENT (Hidden by default) -->
+    <!-- GRAND FINALE BANNER ANNOUNCEMENT -->
     <div id="finaleBanner" class="fixed top-20 left-0 w-full z-20 pointer-events-none flex justify-center opacity-0 transition-opacity duration-500 transform -translate-y-4">
         <div class="glass-panel px-8 py-3 rounded-2xl border-2 border-yellow-400 bg-gradient-to-r from-red-900/80 via-slate-900/90 to-blue-900/80 shadow-[0_0_50px_rgba(255,215,0,0.5)]">
             <h2 class="text-xl md:text-3xl font-black tracking-widest text-center text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-white to-yellow-300 text-glow-gold animate-pulse">
@@ -230,7 +134,7 @@
         <span class="text-[11px] font-bold tracking-widest text-slate-400 uppercase">Est. 1776</span>
     </div>
 
-    <!-- BOTTOM CONTROL PANEL (Responsive Glassmorphism Bar) -->
+    <!-- BOTTOM CONTROL PANEL -->
     <footer id="controlPanel" class="fixed bottom-3 left-3 right-3 md:left-1/2 md:-translate-x-1/2 md:w-[920px] z-20 transition-all duration-300">
         <div class="glass-panel rounded-2xl p-3 md:p-4 border border-white/20 shadow-[0_10px_40px_rgba(0,0,0,0.7)] flex flex-col gap-3">
             
@@ -238,21 +142,21 @@
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <div class="flex items-center gap-2 flex-1 min-w-[200px]">
                     <!-- Launch Random -->
-                    <button onclick="app.launchRandomFirework()" class="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 active:scale-95 text-white font-bold py-2 px-3.5 rounded-xl shadow-[0_0_15px_rgba(230,57,70,0.4)] transition-all flex items-center justify-center gap-1.5 text-xs md:text-sm border border-red-400/30">
+                    <button id="btnLaunchRandom" class="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 active:scale-95 text-white font-bold py-2 px-3.5 rounded-xl shadow-[0_0_15px_rgba(230,57,70,0.4)] transition-all flex items-center justify-center gap-1.5 text-xs md:text-sm border border-red-400/30">
                         <span>🚀</span>
                         <span>Launch Spark</span>
                         <span class="text-[10px] bg-black/30 px-1.5 py-0.5 rounded ml-1 hidden lg:inline font-mono">SPACE</span>
                     </button>
 
                     <!-- Grand Finale -->
-                    <button onclick="app.triggerGrandFinale()" id="finaleBtn" class="flex-1 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 hover:from-yellow-400 hover:to-amber-500 active:scale-95 text-slate-950 font-black py-2 px-3.5 rounded-xl shadow-[0_0_20px_rgba(255,215,0,0.5)] transition-all flex items-center justify-center gap-1.5 text-xs md:text-sm border border-yellow-200/50">
+                    <button id="btnGrandFinale" class="flex-1 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 hover:from-yellow-400 hover:to-amber-500 active:scale-95 text-slate-950 font-black py-2 px-3.5 rounded-xl shadow-[0_0_20px_rgba(255,215,0,0.5)] transition-all flex items-center justify-center gap-1.5 text-xs md:text-sm border border-yellow-200/50">
                         <span>🎇</span>
                         <span>Grand Finale</span>
                         <span class="text-[10px] bg-black/20 text-slate-900 px-1.5 py-0.5 rounded ml-1 hidden lg:inline font-mono">F</span>
                     </button>
 
                     <!-- Auto Show Toggle -->
-                    <button onclick="app.toggleAutoShow()" id="autoShowBtn" class="bg-slate-800/80 hover:bg-slate-700/80 active:scale-95 text-slate-200 font-bold py-2 px-3.5 rounded-xl border border-white/15 transition-all flex items-center justify-center gap-1.5 text-xs md:text-sm">
+                    <button id="btnAutoShow" class="bg-slate-800/80 hover:bg-slate-700/80 active:scale-95 text-slate-200 font-bold py-2 px-3.5 rounded-xl border border-white/15 transition-all flex items-center justify-center gap-1.5 text-xs md:text-sm">
                         <span id="autoShowIcon" class="w-2.5 h-2.5 rounded-full bg-slate-500 transition-colors"></span>
                         <span id="autoShowText">Auto Show</span>
                         <span class="text-[10px] bg-black/30 px-1.5 py-0.5 rounded ml-1 hidden lg:inline font-mono">A</span>
@@ -262,11 +166,11 @@
                 <!-- Color Theme Selector -->
                 <div class="flex items-center gap-1.5 bg-slate-950/60 p-1 rounded-xl border border-white/10 w-full sm:w-auto overflow-x-auto no-scrollbar">
                     <span class="text-[11px] font-semibold text-slate-400 px-2 hidden sm:inline">Theme:</span>
-                    <button onclick="app.setTheme('patriot')" id="theme-patriot" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-gradient-to-r from-red-600 via-white to-blue-600 text-slate-950 shadow-sm" title="Patriotic Red, White & Blue">🇺🇸 Patriot</button>
-                    <button onclick="app.setTheme('rainbow')" id="theme-rainbow" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all hover:bg-white/10" title="Vibrant Rainbow Spectrum">🌈 Rainbow</button>
-                    <button onclick="app.setTheme('gold')" id="theme-gold" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all hover:bg-white/10" title="Elegant Gold & Silver">✨ Gold & Silver</button>
-                    <button onclick="app.setTheme('vibrant')" id="theme-vibrant" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all hover:bg-white/10" title="Neon Cyberpunk Glow">⚡ Neon</button>
-                    <button onclick="app.setTheme('cool')" id="theme-cool" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all hover:bg-white/10" title="Ice Blue & Royal Sapphire">❄️ Cool Blue</button>
+                    <button id="theme-patriot" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-gradient-to-r from-red-600 via-white to-blue-600 text-slate-950 shadow-sm" title="Patriotic Red, White & Blue">🇺🇸 Patriot</button>
+                    <button id="theme-rainbow" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all hover:bg-white/10" title="Vibrant Rainbow Spectrum">🌈 Rainbow</button>
+                    <button id="theme-gold" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all hover:bg-white/10" title="Elegant Gold & Silver">✨ Gold & Silver</button>
+                    <button id="theme-vibrant" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all hover:bg-white/10" title="Neon Cyberpunk Glow">⚡ Neon</button>
+                    <button id="theme-cool" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition-all hover:bg-white/10" title="Ice Blue & Royal Sapphire">❄️ Cool Blue</button>
                 </div>
             </div>
 
@@ -278,7 +182,7 @@
                         <span>Auto Rate:</span>
                         <span id="valRate" class="text-yellow-400 font-bold">Medium</span>
                     </div>
-                    <input type="range" id="sliderRate" min="1" max="10" value="5" oninput="app.updateConfig('rate', this.value)">
+                    <input type="range" id="sliderRate" min="1" max="10" value="5">
                 </div>
 
                 <!-- Explosion Size -->
@@ -287,7 +191,7 @@
                         <span>Burst Size:</span>
                         <span id="valSize" class="text-yellow-400 font-bold">110%</span>
                     </div>
-                    <input type="range" id="sliderSize" min="50" max="180" value="110" oninput="app.updateConfig('size', this.value)">
+                    <input type="range" id="sliderSize" min="50" max="180" value="110">
                 </div>
 
                 <!-- Particle Count -->
@@ -296,14 +200,14 @@
                         <span>Particles:</span>
                         <span id="valParticles" class="text-yellow-400 font-bold">150</span>
                     </div>
-                    <input type="range" id="sliderParticles" min="60" max="300" step="10" value="150" oninput="app.updateConfig('particles', this.value)">
+                    <input type="range" id="sliderParticles" min="60" max="300" step="10" value="150">
                 </div>
 
                 <!-- Wind / Horizon Setting -->
                 <div class="flex flex-col gap-1">
                     <div class="flex justify-between text-slate-300 font-medium">
                         <span>Horizon:</span>
-                        <select id="selectHorizon" onchange="app.setHorizon(this.value)" class="bg-slate-900 border border-white/20 rounded px-1.5 py-0.5 text-[11px] text-yellow-300 focus:outline-none">
+                        <select id="selectHorizon" class="bg-slate-900 border border-white/20 rounded px-1.5 py-0.5 text-[11px] text-yellow-300 focus:outline-none">
                             <option value="skyline">🏙️ City Skyline</option>
                             <option value="water">🌊 Lake Reflection</option>
                             <option value="monument">🗽 Liberty Silhouette</option>
@@ -313,7 +217,7 @@
                     <!-- Wind speed indicator -->
                     <div class="flex items-center justify-between text-[10px] text-slate-400 mt-0.5">
                         <span>Wind: <span id="windDisplay" class="text-slate-200">Calm (0 mph)</span></span>
-                        <button onclick="app.randomizeWind()" class="text-yellow-400 hover:underline">Randomize</button>
+                        <button id="btnRandomizeWind" class="text-yellow-400 hover:underline">Randomize</button>
                     </div>
                 </div>
             </div>
@@ -334,7 +238,7 @@
         <div class="glass-panel w-full max-w-lg rounded-3xl p-6 border-2 border-yellow-400/40 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative transform scale-95 transition-transform duration-300" id="triviaCard">
             
             <!-- Close Button -->
-            <button onclick="app.closeTriviaModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-300 hover:text-white transition-all font-bold">
+            <button id="btnCloseTrivia" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-300 hover:text-white transition-all font-bold">
                 ✕
             </button>
 
@@ -361,10 +265,10 @@
             <div class="flex items-center justify-between">
                 <span id="triviaCounter" class="text-xs text-slate-400 font-mono">Fact 1 of 8</span>
                 <div class="flex gap-2">
-                    <button onclick="app.prevTrivia()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold transition-all">
+                    <button id="btnPrevTrivia" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold transition-all">
                         ← Previous
                     </button>
-                    <button onclick="app.nextTrivia()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-red-600 via-yellow-500 to-blue-600 hover:opacity-95 text-slate-950 text-xs font-black transition-all shadow-md">
+                    <button id="btnNextTrivia" class="px-5 py-2 rounded-xl bg-gradient-to-r from-red-600 via-yellow-500 to-blue-600 hover:opacity-95 text-slate-950 text-xs font-black transition-all shadow-md">
                         Next Fact →
                     </button>
                 </div>
@@ -372,1077 +276,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT FIREWORKS ENGINE & AUDIO SYNTHESIS -->
-    <script>
-        /**
-         * 🎇 LIBERTY SPARKS - WORLD-CLASS PARTICLE & AUDIO ENGINE
-         * Single-file vanilla JS implementation designed for maximum performance (60fps),
-         * authentic particle physics, Web Audio API procedural synthesis, and visual delight.
-         */
-
-        // --- TRIVIA DATA ---
-        const TRIVIA_FACTS = [
-            "Americans spend over $1.5 billion on fireworks each 4th of July, lighting up over 16,000 official public firework displays nationwide!",
-            "The tradition of setting off fireworks on the 4th of July began in Philadelphia on July 4, 1777, during the very first organized celebration of Independence Day.",
-            "In 1776, John Adams famously wrote to his wife Abigail that America's Independence should be celebrated with 'Pomp and Parade, with Shews, Games, Sports, Guns, Bells, Bonfires and Illuminations from one End of this Continent to the other.'",
-            "The Declaration of Independence was officially adopted on July 4, 1776, but most delegates didn't actually sign the historic document until August 2, 1776!",
-            "The largest fireworks display in the United States is the annual Macy's 4th of July Fireworks show in New York City, using over 60,000 shells launched from barges!",
-            "Different metallic elements give fireworks their colors: Strontium produces deep reds, Copper produces vibrant blues, Barium makes greens, and Sodium creates bright yellows and golds!",
-            "The 'crackle' sound in fireworks (often called Dragon's Eggs) is produced by micro-capsules of bismuth subcarbonate or lead tetroxide that explode rapidly in sequence as they burn.",
-            "Three U.S. Presidents — John Adams, Thomas Jefferson, and James Monroe — all passed away on the 4th of July! Remarkably, Adams and Jefferson died within hours of each other on July 4, 1826, exactly 50 years after the Declaration of Independence."
-        ];
-
-        // --- COLOR THEMES (Hex & RGB mappings for glowing particle effects) ---
-        const COLOR_THEMES = {
-            patriot: [
-                { hex: '#E63946', r: 230, g: 57,  b: 70 },  // Crimson Red
-                { hex: '#FFFFFF', r: 255, g: 255, b: 255 }, // Bright White
-                { hex: '#38B6FF', r: 56,  g: 182, b: 255 }, // Electric Blue
-                { hex: '#FFD700', r: 255, g: 215, b: 0 },   // Vibrant Gold
-                { hex: '#FF3366', r: 255, g: 51,  b: 102 }  // Spark Red
-            ],
-            rainbow: [
-                { hex: '#FF0055', r: 255, g: 0,   b: 85 },
-                { hex: '#FF7700', r: 255, g: 119, b: 0 },
-                { hex: '#FFDD00', r: 255, g: 221, b: 0 },
-                { hex: '#00FF66', r: 0,   g: 255, b: 102 },
-                { hex: '#00CCFF', r: 0,   g: 204, b: 255 },
-                { hex: '#AA00FF', r: 170, g: 0,   b: 255 }
-            ],
-            gold: [
-                { hex: '#FFD700', r: 255, g: 215, b: 0 },   // Pure Gold
-                { hex: '#FFAA00', r: 255, g: 170, b: 0 },   // Amber Gold
-                { hex: '#FFFFFF', r: 255, g: 255, b: 255 }, // Silver White
-                { hex: '#FFE57F', r: 255, g: 229, b: 127 }, // Champagne
-                { hex: '#FFC000', r: 255, g: 192, b: 0 }    // Deep Gold
-            ],
-            vibrant: [
-                { hex: '#FF007F', r: 255, g: 0,   b: 127 }, // Neon Magenta
-                { hex: '#00F0FF', r: 0,   g: 240, b: 255 }, // Cyber Cyan
-                { hex: '#39FF14', r: 57,  g: 255, b: 20 },  // Electric Lime
-                { hex: '#BF00FF', r: 191, g: 0,   b: 255 }, // Electric Purple
-                { hex: '#FF3F00', r: 255, g: 63,  b: 0 }    // Neon Orange
-            ],
-            cool: [
-                { hex: '#00E5FF', r: 0,   g: 229, b: 255 }, // Ice Blue
-                { hex: '#2979FF', r: 41,  g: 121, b: 255 }, // Royal Blue
-                { hex: '#FFFFFF', r: 255, g: 255, b: 255 }, // Snow White
-                { hex: '#80D8FF', r: 128, g: 216, b: 255 }, // Pale Cyan
-                { hex: '#0040FF', r: 0,   g: 64,  b: 255 }  // Deep Sapphire
-            ]
-        };
-
-        // --- WEB AUDIO API PROCEDURAL SOUND SYNTHESIS ---
-        class SoundSystem {
-            constructor() {
-                this.ctx = null;
-                this.enabled = true;
-                this.initialized = false;
-            }
-
-            init() {
-                if (this.initialized) return;
-                try {
-                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                    this.ctx = new AudioContextClass();
-                    this.initialized = true;
-                } catch (e) {
-                    console.warn("Web Audio API not supported on this device.");
-                    this.enabled = false;
-                }
-            }
-
-            // Resume audio context if browser suspended it waiting for user gesture
-            ensureResumed() {
-                if (!this.initialized) this.init();
-                if (this.ctx && this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
-            }
-
-            // 1. Launch / Whoosh rising sound
-            playLaunch() {
-                if (!this.enabled || !this.ctx) return;
-                this.ensureResumed();
-
-                const now = this.ctx.currentTime;
-                const duration = 0.75;
-
-                // Create noise buffer for whoosh air sound
-                const bufferSize = this.ctx.sampleRate * duration;
-                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 2);
-                }
-
-                const noise = this.ctx.createBufferSource();
-                noise.buffer = buffer;
-
-                // Bandpass filter that sweeps upwards in frequency
-                const filter = this.ctx.createBiquadFilter();
-                filter.type = 'bandpass';
-                filter.frequency.setValueAtTime(200, now);
-                filter.frequency.exponentialRampToValueAtTime(1100, now + duration);
-                filter.Q.value = 3;
-
-                // Gain control
-                const gain = this.ctx.createGain();
-                gain.gain.setValueAtTime(0.01, now);
-                gain.gain.linearRampToValueAtTime(0.18, now + duration * 0.7);
-                gain.gain.linearRampToValueAtTime(0.0, now + duration);
-
-                noise.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.ctx.destination);
-
-                noise.start(now);
-                noise.stop(now + duration);
-            }
-
-            // 2. Explosion Boom + Crisp Crack
-            playExplosion(sizeFactor = 1.0) {
-                if (!this.enabled || !this.ctx) return;
-                this.ensureResumed();
-
-                const now = this.ctx.currentTime;
-
-                // --- Part A: Sub-bass boom (Sine/Triangle wave sweep) ---
-                const osc = this.ctx.createOscillator();
-                const oscGain = this.ctx.createGain();
-                
-                osc.type = 'sine';
-                const startFreq = 110 + Math.random() * 30;
-                osc.frequency.setValueAtTime(startFreq, now);
-                osc.frequency.exponentialRampToValueAtTime(28, now + 0.45);
-
-                const boomVolume = Math.min(0.5, 0.35 * (sizeFactor / 100));
-                oscGain.gain.setValueAtTime(boomVolume, now);
-                oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
-
-                osc.connect(oscGain);
-                oscGain.connect(this.ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.6);
-
-                // --- Part B: Explosive Crack (Filtered Pink/White Noise) ---
-                const duration = 0.6;
-                const bufferSize = this.ctx.sampleRate * duration;
-                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.08));
-                }
-
-                const noise = this.ctx.createBufferSource();
-                noise.buffer = buffer;
-
-                // Lowpass filter to simulate atmospheric resonance
-                const filter = this.ctx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(3500, now);
-                filter.frequency.exponentialRampToValueAtTime(400, now + duration);
-
-                const noiseGain = this.ctx.createGain();
-                noiseGain.gain.setValueAtTime(0.4 * (sizeFactor / 100), now);
-                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-
-                noise.connect(filter);
-                filter.connect(noiseGain);
-                noiseGain.connect(this.ctx.destination);
-
-                noise.start(now);
-                noise.stop(now + duration);
-
-                // --- Part C: Secondary Crackles / Echoes ---
-                if (Math.random() > 0.3) {
-                    setTimeout(() => this.playCrackle(), Math.random() * 150 + 100);
-                }
-            }
-
-            // 3. Crisp crackles for lingering sparkle trails
-            playCrackle() {
-                if (!this.enabled || !this.ctx) return;
-                const now = this.ctx.currentTime;
-                const duration = 0.08;
-
-                const bufferSize = this.ctx.sampleRate * duration;
-                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.02));
-                }
-
-                const noise = this.ctx.createBufferSource();
-                noise.buffer = buffer;
-
-                const filter = this.ctx.createBiquadFilter();
-                filter.type = 'highpass';
-                filter.frequency.value = 1800;
-
-                const gain = this.ctx.createGain();
-                gain.gain.setValueAtTime(0.06, now);
-                gain.gain.linearRampToValueAtTime(0.001, now + duration);
-
-                noise.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.ctx.destination);
-
-                noise.start(now);
-                noise.stop(now + duration);
-            }
-        }
-
-        // --- BACKGROUND STAR CLASS ---
-        class Star {
-            constructor(canvasWidth, canvasHeight) {
-                this.reset(canvasWidth, canvasHeight);
-                this.y = Math.random() * (canvasHeight * 0.75); // Stars mostly in upper 3/4
-            }
-
-            reset(width, height) {
-                this.x = Math.random() * width;
-                this.y = Math.random() * (height * 0.75);
-                this.size = Math.random() * 1.8 + 0.4;
-                this.baseAlpha = Math.random() * 0.7 + 0.2;
-                this.alpha = this.baseAlpha;
-                this.twinkleSpeed = Math.random() * 0.03 + 0.01;
-                this.twinkleDir = Math.random() > 0.5 ? 1 : -1;
-                this.color = Math.random() > 0.8 ? '#FFD700' : (Math.random() > 0.5 ? '#90E0EF' : '#FFFFFF');
-            }
-
-            update() {
-                this.alpha += this.twinkleSpeed * this.twinkleDir;
-                if (this.alpha >= 1.0) {
-                    this.alpha = 1.0;
-                    this.twinkleDir = -1;
-                } else if (this.alpha <= 0.15) {
-                    this.alpha = 0.15;
-                    this.twinkleDir = 1;
-                }
-            }
-
-            draw(ctx) {
-                ctx.save();
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
-        }
-
-        // --- PARTICLE CLASS (For Explosion Bursts & Sparks) ---
-        class Particle {
-            constructor(x, y, colorObj, vx, vy, style = 'classic', sizeFactor = 1) {
-                this.x = x;
-                this.y = y;
-                this.color = colorObj;
-                this.vx = vx;
-                this.vy = vy;
-                this.style = style; // 'classic', 'willow', 'sparkle', 'ring'
-                
-                // Physics params based on style
-                if (style === 'willow') {
-                    this.friction = 0.965;
-                    this.gravity = 0.12;
-                    this.decay = Math.random() * 0.008 + 0.005;
-                    this.size = (Math.random() * 2.2 + 1.2) * (sizeFactor / 100);
-                } else if (style === 'sparkle') {
-                    this.friction = 0.94;
-                    this.gravity = 0.08;
-                    this.decay = Math.random() * 0.015 + 0.01;
-                    this.size = (Math.random() * 1.8 + 0.8) * (sizeFactor / 100);
-                } else { // Classic / Ring
-                    this.friction = 0.955;
-                    this.gravity = 0.09;
-                    this.decay = Math.random() * 0.012 + 0.008;
-                    this.size = (Math.random() * 2.0 + 1.0) * (sizeFactor / 100);
-                }
-
-                this.alpha = 1.0;
-                this.brightness = Math.random() * 20 + 80; // For shimmering
-                this.history = [];
-                this.maxHistory = style === 'willow' ? 8 : 5;
-                this.sparkleFreq = Math.random() * 0.3 + 0.1;
-                this.age = 0;
-            }
-
-            update(wind = 0) {
-                this.age++;
-                // Record position history for smooth trails
-                this.history.unshift({ x: this.x, y: this.y });
-                if (this.history.length > this.maxHistory) {
-                    this.history.pop();
-                }
-
-                // Apply wind, friction and gravity
-                this.vx += wind * 0.005;
-                this.vx *= this.friction;
-                this.vy *= this.friction;
-                this.vy += this.gravity;
-
-                this.x += this.vx;
-                this.y += this.vy;
-
-                // Alpha decay
-                this.alpha -= this.decay;
-                
-                // Sparkle flicker effect towards end of life
-                if (this.style === 'sparkle' || this.alpha < 0.4) {
-                    if (Math.random() < 0.25) {
-                        this.brightness = Math.random() * 50 + 50;
-                    }
-                }
-            }
-
-            draw(ctx) {
-                if (this.alpha <= 0) return;
-
-                ctx.save();
-                ctx.globalAlpha = Math.max(0, this.alpha);
-                
-                // Draw glowing trail from history
-                if (this.history.length > 1) {
-                    ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    for (let i = 0; i < this.history.length; i++) {
-                        const pt = this.history[i];
-                        ctx.lineTo(pt.x, pt.y);
-                    }
-                    ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.alpha * 0.5})`;
-                    ctx.lineWidth = this.size * 0.8;
-                    ctx.lineCap = 'round';
-                    ctx.stroke();
-                }
-
-                // Draw bright particle head
-                ctx.fillStyle = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
-                ctx.shadowColor = this.color.hex;
-                ctx.shadowBlur = 8;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Extra white core for super hot glow
-                if (this.alpha > 0.5) {
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.shadowBlur = 2;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size * 0.4, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                ctx.restore();
-            }
-        }
-
-        // --- ROCKET CLASS (Phase 1: Traveling upward) ---
-        class Rocket {
-            constructor(startX, startY, targetX, targetY, theme, sizeFactor, particleCount, onExplode) {
-                this.x = startX;
-                this.y = startY;
-                this.startX = startX;
-                this.startY = startY;
-                this.targetX = targetX;
-                this.targetY = targetY;
-                this.theme = theme;
-                this.sizeFactor = sizeFactor;
-                this.particleCount = particleCount;
-                this.onExplode = onExplode;
-
-                // Calculate angle and distance
-                const angle = Math.atan2(targetY - startY, targetX - startX);
-                const distance = Math.hypot(targetX - startX, targetY - startY);
-                
-                // Speed depends slightly on height to reach target naturally
-                const speed = Math.max(10, Math.min(16, distance * 0.032));
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-
-                this.color = theme[Math.floor(Math.random() * theme.length)];
-                this.history = [];
-                this.maxHistory = 6;
-                this.exploded = false;
-                this.wobble = Math.random() * 10;
-            }
-
-            update(wind = 0) {
-                this.history.unshift({ x: this.x, y: this.y });
-                if (this.history.length > this.maxHistory) {
-                    this.history.pop();
-                }
-
-                // Slight aerodynamic wobble
-                this.wobble += 0.4;
-                this.x += this.vx + Math.sin(this.wobble) * 0.3 + (wind * 0.02);
-                this.y += this.vy;
-
-                // Check if reached target height or heading downward
-                if (this.vy >= -1 || this.y <= this.targetY || Math.hypot(this.targetX - this.x, this.targetY - this.y) < 15) {
-                    this.explode();
-                }
-            }
-
-            explode() {
-                if (this.exploded) return;
-                this.exploded = true;
-                this.onExplode(this.x, this.y, this.theme, this.sizeFactor, this.particleCount);
-            }
-
-            draw(ctx) {
-                if (this.exploded) return;
-                ctx.save();
-
-                // Draw rising rocket trail
-                if (this.history.length > 1) {
-                    ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    for (let i = 0; i < this.history.length; i++) {
-                        ctx.lineTo(this.history[i].x, this.history[i].y);
-                    }
-                    ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0.6)`;
-                    ctx.lineWidth = 2.5;
-                    ctx.lineCap = 'round';
-                    ctx.shadowColor = this.color.hex;
-                    ctx.shadowBlur = 10;
-                    ctx.stroke();
-                }
-
-                // Rocket glowing head
-                ctx.fillStyle = '#FFFFFF';
-                ctx.shadowColor = '#FFD700';
-                ctx.shadowBlur = 12;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.restore();
-            }
-        }
-
-        // --- MAIN FIREWORKS APPLICATION ENGINE ---
-        class FireworksApp {
-            constructor() {
-                this.canvas = document.getElementById('fireworksCanvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.sound = new SoundSystem();
-
-                // App State
-                this.rockets = [];
-                this.particles = [];
-                this.stars = [];
-                this.currentThemeName = 'patriot';
-                this.currentTheme = COLOR_THEMES.patriot;
-                
-                // Config parameters
-                this.config = {
-                    rate: 5,        // 1-10 slider
-                    size: 110,      // Explosion scale %
-                    particles: 150, // Count per burst
-                    wind: 0,        // -5 to +5
-                    horizon: 'skyline', // skyline, water, monument, none
-                    autoShow: false,
-                    soundEnabled: true,
-                    uiVisible: true
-                };
-
-                this.autoTimer = 0;
-                this.currentTriviaIndex = 0;
-                this.finaleActive = false;
-                this.waterRipples = [];
-
-                this.init();
-            }
-
-            init() {
-                this.resizeCanvas();
-                window.addEventListener('resize', () => this.resizeCanvas());
-
-                // Generate background stars
-                for (let i = 0; i < 140; i++) {
-                    this.stars.push(new Star(this.canvas.width, this.canvas.height));
-                }
-
-                // Interactive click/tap listeners on canvas
-                this.canvas.addEventListener('pointerdown', (e) => this.handleCanvasClick(e));
-
-                // Keyboard shortcuts
-                window.addEventListener('keydown', (e) => this.handleKeyDown(e));
-
-                // Start rendering loop
-                this.animate();
-
-                // Set initial trivia
-                this.updateTriviaDisplay();
-
-                // Randomize initial wind slightly
-                this.randomizeWind();
-
-                console.log("🎆 Liberty Sparks Engine Initialized (60fps Target)");
-            }
-
-            resizeCanvas() {
-                this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
-                // Readjust stars if out of bounds
-                this.stars.forEach(star => {
-                    if (star.x > this.canvas.width) star.x = Math.random() * this.canvas.width;
-                });
-            }
-
-            // --- USER INTERACTIONS ---
-            handleCanvasClick(e) {
-                // Hide prompt badge on first interaction
-                const badge = document.getElementById('instructionBadge');
-                if (badge && !badge.classList.contains('hidden')) {
-                    badge.classList.add('opacity-0');
-                    setTimeout(() => badge.classList.add('hidden'), 300);
-                }
-
-                // Calculate coordinates
-                const rect = this.canvas.getBoundingClientRect();
-                const targetX = e.clientX - rect.left;
-                const targetY = e.clientY - rect.top;
-
-                // Launch from bottom roughly below target
-                const startX = targetX + (Math.random() - 0.5) * 120;
-                const startY = this.canvas.height;
-
-                this.launchRocket(startX, startY, targetX, targetY);
-            }
-
-            handleKeyDown(e) {
-                // Ignore if typing in an input (though none exist here)
-                if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-
-                switch (e.code) {
-                    case 'Space':
-                        e.preventDefault();
-                        this.launchRandomFirework();
-                        break;
-                    case 'KeyF':
-                        e.preventDefault();
-                        this.triggerGrandFinale();
-                        break;
-                    case 'KeyA':
-                        e.preventDefault();
-                        this.toggleAutoShow();
-                        break;
-                    case 'KeyM':
-                        e.preventDefault();
-                        this.toggleSound();
-                        break;
-                    case 'KeyC':
-                        e.preventDefault();
-                        this.captureScreenshot();
-                        break;
-                    case 'KeyH':
-                        e.preventDefault();
-                        this.toggleUI();
-                        break;
-                }
-            }
-
-            // --- LAUNCH & EXPLOSION LOGIC ---
-            launchRocket(startX, startY, targetX, targetY, overrideTheme = null) {
-                const theme = overrideTheme || this.currentTheme;
-                
-                // Play rising sound
-                if (this.config.soundEnabled) {
-                    this.sound.playLaunch();
-                }
-
-                const rocket = new Rocket(
-                    startX, startY, targetX, targetY, theme,
-                    this.config.size, this.config.particles,
-                    (ex, ey, thm, sz, cnt) => this.createExplosion(ex, ey, thm, sz, cnt)
-                );
-
-                this.rockets.push(rocket);
-            }
-
-            launchRandomFirework() {
-                const targetX = Math.random() * (this.canvas.width * 0.8) + (this.canvas.width * 0.1);
-                const targetY = Math.random() * (this.canvas.height * 0.45) + (this.canvas.height * 0.1);
-                const startX = targetX + (Math.random() - 0.5) * 250;
-                const startY = this.canvas.height;
-
-                this.launchRocket(startX, startY, targetX, targetY);
-            }
-
-            createExplosion(x, y, theme, sizeFactor, particleCount) {
-                // Play explosion sound
-                if (this.config.soundEnabled) {
-                    this.sound.playExplosion(sizeFactor);
-                }
-
-                // Add water ripple if lake horizon is selected
-                if (this.config.horizon === 'water') {
-                    this.waterRipples.push({ x: x, y: this.canvas.height - 40, radius: 10, maxRadius: Math.random() * 100 + 80, alpha: 0.6, color: theme[0] });
-                }
-
-                // Choose random explosion style for variety
-                const styles = ['classic', 'classic', 'ring', 'willow', 'sparkle', 'double'];
-                const selectedStyle = styles[Math.floor(Math.random() * styles.length)];
-
-                const count = parseInt(particleCount);
-                const baseSpeed = (Math.random() * 3.5 + 4.5) * (sizeFactor / 100);
-
-                if (selectedStyle === 'ring' || selectedStyle === 'saturn') {
-                    // Ring / Circle explosion
-                    const color = theme[Math.floor(Math.random() * theme.length)];
-                    for (let i = 0; i < count; i++) {
-                        const angle = (i * Math.PI * 2) / count;
-                        const speed = baseSpeed * (0.95 + Math.random() * 0.1);
-                        const vx = Math.cos(angle) * speed;
-                        const vy = Math.sin(angle) * speed;
-                        this.particles.push(new Particle(x, y, color, vx, vy, 'classic', sizeFactor));
-                    }
-                    // Inner core
-                    const innerColor = theme[Math.floor(Math.random() * theme.length)];
-                    for (let i = 0; i < count * 0.3; i++) {
-                        const angle = Math.random() * Math.PI * 2;
-                        const speed = baseSpeed * 0.4 * Math.random();
-                        this.particles.push(new Particle(x, y, innerColor, Math.cos(angle) * speed, Math.sin(angle) * speed, 'sparkle', sizeFactor));
-                    }
-                } 
-                else if (selectedStyle === 'double') {
-                    // Double Burst (Outer ring + Inner ring of different color)
-                    const outerColor = theme[0];
-                    const innerColor = theme.length > 1 ? theme[1] : theme[0];
-                    
-                    for (let i = 0; i < count * 0.6; i++) {
-                        const angle = Math.random() * Math.PI * 2;
-                        const speed = baseSpeed * (0.85 + Math.random() * 0.3);
-                        this.particles.push(new Particle(x, y, outerColor, Math.cos(angle) * speed, Math.sin(angle) * speed, 'classic', sizeFactor));
-                    }
-                    for (let i = 0; i < count * 0.4; i++) {
-                        const angle = Math.random() * Math.PI * 2;
-                        const speed = baseSpeed * (0.35 + Math.random() * 0.2);
-                        this.particles.push(new Particle(x, y, innerColor, Math.cos(angle) * speed, Math.sin(angle) * speed, 'sparkle', sizeFactor));
-                    }
-                }
-                else if (selectedStyle === 'willow') {
-                    // Brocade / Willow (Heavy gold cascading trails)
-                    const goldColor = { hex: '#FFD700', r: 255, g: 215, b: 0 };
-                    for (let i = 0; i < count; i++) {
-                        const angle = Math.random() * Math.PI * 2;
-                        const speed = baseSpeed * Math.sqrt(Math.random()) * 1.1;
-                        this.particles.push(new Particle(x, y, goldColor, Math.cos(angle) * speed, Math.sin(angle) * speed, 'willow', sizeFactor));
-                    }
-                }
-                else {
-                    // Classic Sphere Burst
-                    for (let i = 0; i < count; i++) {
-                        const angle = Math.random() * Math.PI * 2;
-                        // Using sqrt for more uniform volumetric distribution
-                        const speed = baseSpeed * Math.sqrt(Math.random()) * 1.05;
-                        const color = theme[Math.floor(Math.random() * theme.length)];
-                        const pStyle = Math.random() > 0.7 ? 'sparkle' : 'classic';
-                        this.particles.push(new Particle(x, y, color, Math.cos(angle) * speed, Math.sin(angle) * speed, pStyle, sizeFactor));
-                    }
-                }
-            }
-
-            // --- SPECIAL EVENTS ---
-            triggerGrandFinale() {
-                if (this.finaleActive) return;
-                this.finaleActive = true;
-
-                // Show UI Banner
-                const banner = document.getElementById('finaleBanner');
-                banner.classList.remove('opacity-0', '-translate-y-4');
-                banner.classList.add('opacity-100', 'translate-y-0');
-
-                let count = 0;
-                const totalShots = 25;
-                const interval = setInterval(() => {
-                    count++;
-                    // Launch multiple rapid fireworks across the sky
-                    const x1 = (this.canvas.width * 0.15) + Math.random() * (this.canvas.width * 0.7);
-                    const y1 = (this.canvas.height * 0.15) + Math.random() * (this.canvas.height * 0.35);
-                    this.launchRocket(x1 + (Math.random() - 0.5) * 150, this.canvas.height, x1, y1);
-
-                    if (count % 3 === 0) {
-                        // Launch a synchronized side-by-side pair
-                        const yPair = this.canvas.height * 0.3;
-                        this.launchRocket(this.canvas.width * 0.2, this.canvas.height, this.canvas.width * 0.25, yPair);
-                        this.launchRocket(this.canvas.width * 0.8, this.canvas.height, this.canvas.width * 0.75, yPair);
-                    }
-
-                    if (count >= totalShots) {
-                        clearInterval(interval);
-                        setTimeout(() => {
-                            banner.classList.remove('opacity-100', 'translate-y-0');
-                            banner.classList.add('opacity-0', '-translate-y-4');
-                            this.finaleActive = false;
-                        }, 2500);
-                    }
-                }, 180);
-            }
-
-            toggleAutoShow() {
-                this.config.autoShow = !this.config.autoShow;
-                const btn = document.getElementById('autoShowBtn');
-                const icon = document.getElementById('autoShowIcon');
-                const text = document.getElementById('autoShowText');
-
-                if (this.config.autoShow) {
-                    btn.classList.replace('bg-slate-800/80', 'bg-green-600/90');
-                    btn.classList.add('border-green-400');
-                    icon.classList.replace('bg-slate-500', 'bg-white');
-                    icon.classList.add('animate-ping');
-                    text.innerText = 'Auto: ON';
-                } else {
-                    btn.classList.replace('bg-green-600/90', 'bg-slate-800/80');
-                    btn.classList.remove('border-green-400');
-                    icon.classList.replace('bg-white', 'bg-slate-500');
-                    icon.classList.remove('animate-ping');
-                    text.innerText = 'Auto Show';
-                }
-            }
-
-            // --- SILHOUETTE & HORIZON RENDERING ---
-            drawHorizon() {
-                if (this.config.horizon === 'none') return;
-                const ctx = this.ctx;
-                const w = this.canvas.width;
-                const h = this.canvas.height;
-
-                ctx.save();
-                ctx.fillStyle = '#03050B'; // Very deep navy/black silhouette
-
-                if (this.config.horizon === 'skyline') {
-                    // City Skyline Silhouette
-                    ctx.beginPath();
-                    ctx.moveTo(0, h);
-                    let x = 0;
-                    // Seeded architectural skyline
-                    const buildingWidths = [35, 45, 25, 60, 40, 55, 30, 50, 65, 35, 45, 40, 55, 30, 70, 40];
-                    const buildingHeights = [40, 70, 35, 110, 60, 95, 50, 130, 85, 45, 100, 65, 120, 55, 90, 60];
-                    let idx = 0;
-                    while (x < w) {
-                        const bw = buildingWidths[idx % buildingWidths.length] * (w / 1000 + 0.5);
-                        const bh = buildingHeights[idx % buildingHeights.length];
-                        ctx.lineTo(x, h - bh);
-                        ctx.lineTo(x + bw, h - bh);
-                        x += bw;
-                        idx++;
-                    }
-                    ctx.lineTo(w, h);
-                    ctx.closePath();
-                    ctx.fill();
-
-                    // Tiny glowing window lights on buildings
-                    ctx.fillStyle = 'rgba(255, 215, 0, 0.35)';
-                    for (let i = 50; i < w - 50; i += 80) {
-                        if (i % 160 === 0) {
-                            ctx.fillRect(i, h - 70, 4, 6);
-                            ctx.fillRect(i, h - 50, 4, 6);
-                        }
-                    }
-                } 
-                else if (this.config.horizon === 'water') {
-                    // Calm Lake with Water Reflections
-                    const waterHeight = 70;
-                    const gradient = ctx.createLinearGradient(0, h - waterHeight, 0, h);
-                    gradient.addColorStop(0, 'rgba(11, 19, 43, 0.95)');
-                    gradient.addColorStop(1, 'rgba(5, 8, 20, 0.98)');
-                    ctx.fillStyle = gradient;
-                    ctx.fillRect(0, h - waterHeight, w, waterHeight);
-
-                    // Top waterline glow
-                    ctx.strokeStyle = 'rgba(56, 182, 255, 0.3)';
-                    ctx.lineWidth = 1.5;
-                    ctx.beginPath();
-                    ctx.moveTo(0, h - waterHeight);
-                    ctx.lineTo(w, h - waterHeight);
-                    ctx.stroke();
-
-                    // Draw expanding water ripples from explosions
-                    for (let i = this.waterRipples.length - 1; i >= 0; i--) {
-                        const r = this.waterRipples[i];
-                        r.radius += 1.2;
-                        r.alpha -= 0.008;
-                        if (r.alpha <= 0 || r.radius > r.maxRadius) {
-                            this.waterRipples.splice(i, 1);
-                            continue;
-                        }
-                        ctx.save();
-                        ctx.beginPath();
-                        // Flattened ellipse for perspective ripple on water
-                        ctx.ellipse(r.x, h - waterHeight * 0.5, r.radius, r.radius * 0.25, 0, 0, Math.PI * 2);
-                        ctx.strokeStyle = `rgba(${r.color.r}, ${r.color.g}, ${r.color.b}, ${r.alpha})`;
-                        ctx.lineWidth = 1.5;
-                        ctx.stroke();
-                        ctx.restore();
-                    }
-                } 
-                else if (this.config.horizon === 'monument') {
-                    // National Monument / Statue Silhouette & Trees
-                    ctx.beginPath();
-                    ctx.moveTo(0, h);
-                    ctx.lineTo(0, h - 35);
-                    // Tree line rolling hills
-                    for (let i = 0; i <= w; i += 40) {
-                        ctx.quadraticCurveTo(i + 20, h - 50 - Math.sin(i)*10, i + 40, h - 35);
-                    }
-                    ctx.lineTo(w, h);
-                    ctx.fill();
-
-                    // Statue of Liberty / Monument silhouette on left center
-                    const mx = w * 0.25;
-                    ctx.beginPath();
-                    ctx.moveTo(mx - 30, h);
-                    ctx.lineTo(mx - 15, h - 85);
-                    ctx.lineTo(mx - 22, h - 120); // Torch arm
-                    ctx.lineTo(mx - 18, h - 130);
-                    ctx.lineTo(mx - 12, h - 118);
-                    ctx.lineTo(mx - 5, h - 145);  // Crown/Head
-                    ctx.lineTo(mx + 5, h - 145);
-                    ctx.lineTo(mx + 15, h - 85);
-                    ctx.lineTo(mx + 30, h);
-                    ctx.closePath();
-                    ctx.fill();
-
-                    // Glowing torch flame
-                    ctx.fillStyle = '#FFD700';
-                    ctx.shadowColor = '#FF3300';
-                    ctx.shadowBlur = 15;
-                    ctx.beginPath();
-                    ctx.arc(mx - 20, h - 133, 3.5, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                ctx.restore();
-            }
-
-            // --- ANIMATION & RENDER LOOP ---
-            animate() {
-                requestAnimationFrame(() => this.animate());
-
-                // 1. Clear background with semi-transparent dark navy for lingering motion trails
-                this.ctx.fillStyle = 'rgba(5, 8, 20, 0.22)';
-                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-                // 2. Draw Twinkling Background Stars
-                this.stars.forEach(star => {
-                    star.update();
-                    star.draw(this.ctx);
-                });
-
-                // 3. Auto Show Generator Logic
-                if (this.config.autoShow) {
-                    this.autoTimer++;
-                    // Rate slider 1-10 determines frames between automatic launches
-                    const threshold = Math.max(15, 110 - (this.config.rate * 10));
-                    if (this.autoTimer >= threshold) {
-                        this.autoTimer = 0;
-                        this.launchRandomFirework();
-                        // Occasional double launch in auto show
-                        if (Math.random() > 0.7) {
-                            setTimeout(() => this.launchRandomFirework(), 250);
-                        }
-                    }
-                }
-
-                // 4. Use additive blending for glowing fireworks particles!
-                this.ctx.globalCompositeOperation = 'lighter';
-
-                // Update & Draw Rockets
-                for (let i = this.rockets.length - 1; i >= 0; i--) {
-                    const rocket = this.rockets[i];
-                    rocket.update(this.config.wind);
-                    rocket.draw(this.ctx);
-                    if (rocket.exploded) {
-                        this.rockets.splice(i, 1);
-                    }
-                }
-
-                // Update & Draw Explosion Particles
-                for (let i = this.particles.length - 1; i >= 0; i--) {
-                    const p = this.particles[i];
-                    p.update(this.config.wind);
-                    p.draw(this.ctx);
-                    if (p.alpha <= 0) {
-                        this.particles.splice(i, 1);
-                    }
-                }
-
-                // 5. Restore standard blending for horizon silhouette
-                this.ctx.globalCompositeOperation = 'source-over';
-                this.drawHorizon();
-            }
-
-            // --- UI CONFIG & SETTINGS METHODS ---
-            setTheme(themeName) {
-                this.currentThemeName = themeName;
-                this.currentTheme = COLOR_THEMES[themeName] || COLOR_THEMES.patriot;
-
-                // Update UI button highlights
-                Object.keys(COLOR_THEMES).forEach(key => {
-                    const btn = document.getElementById(`theme-${key}`);
-                    if (btn) {
-                        if (key === themeName) {
-                            btn.classList.add('ring-2', 'ring-white', 'scale-105');
-                        } else {
-                            btn.classList.remove('ring-2', 'ring-white', 'scale-105');
-                        }
-                    }
-                });
-
-                // Launch a sample firework of the new theme immediately!
-                this.launchRandomFirework();
-            }
-
-            updateConfig(key, value) {
-                this.config[key] = parseFloat(value);
-                
-                // Update text display badges
-                if (key === 'rate') {
-                    const labels = { 1: 'Very Slow', 3: 'Slow', 5: 'Medium', 8: 'Fast', 10: 'Intense!' };
-                    document.getElementById('valRate').innerText = labels[value] || `${value}x`;
-                } else if (key === 'size') {
-                    document.getElementById('valSize').innerText = `${value}%`;
-                } else if (key === 'particles') {
-                    document.getElementById('valParticles').innerText = value;
-                }
-            }
-
-            setHorizon(type) {
-                this.config.horizon = type;
-            }
-
-            randomizeWind() {
-                const windSpeeds = [-4, -2, 0, 0, 2, 4];
-                this.config.wind = windSpeeds[Math.floor(Math.random() * windSpeeds.length)];
-                const display = document.getElementById('windDisplay');
-                if (this.config.wind === 0) {
-                    display.innerText = 'Calm (0 mph)';
-                    display.className = 'text-slate-200 font-semibold';
-                } else if (this.config.wind > 0) {
-                    display.innerText = `East → (${this.config.wind * 3} mph)`;
-                    display.className = 'text-cyan-300 font-semibold';
-                } else {
-                    display.innerText = `← West (${Math.abs(this.config.wind * 3)} mph)`;
-                    display.className = 'text-cyan-300 font-semibold';
-                }
-            }
-
-            toggleSound() {
-                this.config.soundEnabled = !this.config.soundEnabled;
-                const btn = document.getElementById('soundBtn');
-                const icon = document.getElementById('soundIcon');
-                const label = document.getElementById('soundLabel');
-
-                if (this.config.soundEnabled) {
-                    this.sound.init();
-                    this.sound.ensureResumed();
-                    icon.innerText = '🔊';
-                    label.innerText = 'Sound On';
-                    btn.classList.replace('text-slate-400', 'text-white');
-                    btn.classList.add('border-white/20');
-                } else {
-                    icon.innerText = '🔇';
-                    label.innerText = 'Muted';
-                    btn.classList.replace('text-white', 'text-slate-400');
-                    btn.classList.remove('border-white/20');
-                }
-            }
-
-            toggleUI() {
-                this.config.uiVisible = !this.config.uiVisible;
-                const header = document.getElementById('topHeader');
-                const panel = document.getElementById('controlPanel');
-
-                if (this.config.uiVisible) {
-                    header.style.opacity = '1';
-                    header.style.pointerEvents = 'auto';
-                    panel.style.opacity = '1';
-                    panel.style.pointerEvents = 'auto';
-                    panel.style.transform = 'translateY(0)';
-                } else {
-                    header.style.opacity = '0';
-                    header.style.pointerEvents = 'none';
-                    panel.style.opacity = '0';
-                    panel.style.pointerEvents = 'none';
-                    panel.style.transform = 'translateY(20px)';
-                }
-            }
-
-            // --- CAPTURE SCREENSHOT FEATURE ---
-            captureScreenshot() {
-                // Trigger visual flash
-                const flash = document.getElementById('flash-overlay');
-                flash.classList.remove('opacity-0', 'flash-active');
-                void flash.offsetWidth; // Trigger DOM reflow
-                flash.classList.add('flash-active');
-
-                // Play crackle/shutter audio confirmation if enabled
-                if (this.config.soundEnabled) {
-                    this.sound.playCrackle();
-                }
-
-                // Generate Data URL and download
-                setTimeout(() => {
-                    const dataUrl = this.canvas.toDataURL('image/png');
-                    const link = document.createElement('a');
-                    link.download = `Liberty-Sparks-July4th-${Date.now()}.png`;
-                    link.href = dataUrl;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }, 150);
-            }
-
-            // --- TRIVIA MODAL METHODS ---
-            openTriviaModal() {
-                const modal = document.getElementById('triviaModal');
-                const card = document.getElementById('triviaCard');
-                modal.classList.remove('opacity-0', 'pointer-events-none');
-                modal.classList.add('opacity-100', 'pointer-events-auto');
-                card.classList.replace('scale-95', 'scale-100');
-            }
-
-            closeTriviaModal() {
-                const modal = document.getElementById('triviaModal');
-                const card = document.getElementById('triviaCard');
-                modal.classList.replace('opacity-100', 'opacity-0');
-                modal.classList.replace('pointer-events-auto', 'pointer-events-none');
-                card.classList.replace('scale-100', 'scale-95');
-            }
-
-            updateTriviaDisplay() {
-                const textEl = document.getElementById('triviaText');
-                const counterEl = document.getElementById('triviaCounter');
-                
-                textEl.style.opacity = '0';
-                setTimeout(() => {
-                    textEl.innerText = TRIVIA_FACTS[this.currentTriviaIndex];
-                    counterEl.innerText = `Fact ${this.currentTriviaIndex + 1} of ${TRIVIA_FACTS.length}`;
-                    textEl.style.opacity = '1';
-                }, 150);
-            }
-
-            nextTrivia() {
-                this.currentTriviaIndex = (this.currentTriviaIndex + 1) % TRIVIA_FACTS.length;
-                this.updateTriviaDisplay();
-            }
-
-            prevTrivia() {
-                this.currentTriviaIndex = (this.currentTriviaIndex - 1 + TRIVIA_FACTS.length) % TRIVIA_FACTS.length;
-                this.updateTriviaDisplay();
-            }
-        }
-
-        // --- INITIALIZE APPLICATION ON WINDOW LOAD ---
-        let app = null;
-        window.addEventListener('DOMContentLoaded', () => {
-            app = new FireworksApp();
-            app.setTheme('patriot'); // Set initial active theme UI state
-        });
-    </script>
+    <!-- ES6 MODULAR APPLICATION ENTRY POINT -->
+    <script type="module" src="src/main.js"></script>
 </body>
 </html>
