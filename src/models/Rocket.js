@@ -67,18 +67,20 @@ export class Rocket {
             for (let i = 0; i < this.history.length; i++) {
                 ctx.lineTo(this.history[i].x, this.history[i].y);
             }
-            ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0.6)`;
-            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0.7)`;
+            ctx.lineWidth = 3;
             ctx.lineCap = 'round';
-            ctx.shadowColor = this.color.hex;
-            ctx.shadowBlur = 10;
             ctx.stroke();
         }
 
-        // Rocket glowing white head
+        // Soft gold additive halo around rocket head
+        ctx.fillStyle = 'rgba(255, 215, 0, 0.35)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 7, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Rocket glowing white core
         ctx.fillStyle = '#FFFFFF';
-        ctx.shadowColor = '#FFD700';
-        ctx.shadowBlur = 12;
         ctx.beginPath();
         ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
         ctx.fill();

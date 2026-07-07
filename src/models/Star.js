@@ -32,12 +32,10 @@ export class Star {
     }
 
     draw(ctx) {
-        ctx.save();
-        ctx.globalAlpha = this.alpha;
+        ctx.globalAlpha = Math.max(0, Math.min(1, this.alpha));
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
-        ctx.restore();
     }
 }

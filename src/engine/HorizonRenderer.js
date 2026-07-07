@@ -1,17 +1,24 @@
 /**
- * Liberty Sparks • Horizon & Environment Renderer
- * Dedicated rendering engine for drawing dynamic horizon silhouettes, city skylines,
- * monument landscapes, and animated lake water reflections.
+ * Liberty Sparks • Horizon & Environment Renderer (Optimized with Offscreen Caching)
+ * Uses offscreen canvas caching to pre-render static horizon silhouettes (skyline, monument, water background)
+ * eliminating heavy path recalculations and shadow shaders from the 60 FPS animation loop.
  */
 
 export class HorizonRenderer {
     constructor() {
         this.buildingWidths = [35, 45, 25, 60, 40, 55, 30, 50, 65, 35, 45, 40, 55, 30, 70, 40];
         this.buildingHeights = [40, 70, 35, 110, 60, 95, 50, 130, 85, 45, 100, 65, 120, 55, 90, 60];
+
+        // Offscreen cache properties
+        this.cachedCanvas = null;
+        this.cachedCtx = null;
+        this.cachedType = null;
+        this.cachedWidth = 0;
+        this.cachedHeight = 0;
     }
 
     /**
-     * Render the active horizon silhouette
+     * Render the active horizon silhouette using high-speed bitmap blitting
      * @param {CanvasRenderingContext2D} ctx 
      * @param {string} type - 'skyline', 'water', 'monument', or 'none'
      * @param {number} width - Canvas width
@@ -21,15 +28,44 @@ export class HorizonRenderer {
     draw(ctx, type, width, height, waterRipples = []) {
         if (type === 'none') return;
 
+        // Check if static silhouette needs to be pre-rendered or updated
+        if (this.cachedType !== type || this.cachedWidth !== width || this.cachedHeight !== height || !this.cachedCanvas) {
+            this.updateCache(type, width, height);
+        }
+
+        // Fast hardware-accelerated bitmap draw of the static horizon
+        if (this.cachedCanvas) {
+            ctx.drawImage(this.cachedCanvas, 0, 0);
+        }
+
+        // Only draw dynamic elements (water ripples) in real-time loop
+        if (type === 'water' && waterRipples.length > 0) {
+            this.drawWaterRipples(ctx, width, height, waterRipples);
+        }
+    }
+
+    updateCache(type, w, h) {
+        if (!this.cachedCanvas) {
+            this.cachedCanvas = document.createElement('canvas');
+            this.cachedCtx = this.cachedCanvas.getContext('2d');
+        }
+        this.cachedCanvas.width = w;
+        this.cachedCanvas.height = h;
+        this.cachedType = type;
+        this.cachedWidth = w;
+        this.cachedHeight = h;
+
+        const ctx = this.cachedCtx;
+        ctx.clearRect(0, 0, w, h);
         ctx.save();
         ctx.fillStyle = '#03050B'; // Deep navy/black silhouette color
 
         if (type === 'skyline') {
-            this.drawSkyline(ctx, width, height);
+            this.drawSkyline(ctx, w, h);
         } else if (type === 'water') {
-            this.drawWater(ctx, width, height, waterRipples);
+            this.drawWaterBackground(ctx, w, h);
         } else if (type === 'monument') {
-            this.drawMonument(ctx, width, height);
+            this.drawMonument(ctx, w, h);
         }
 
         ctx.restore();
@@ -63,7 +99,7 @@ export class HorizonRenderer {
         }
     }
 
-    drawWater(ctx, w, h, waterRipples) {
+    drawWaterBackground(ctx, w, h) {
         const waterHeight = 70;
         const gradient = ctx.createLinearGradient(0, h - waterHeight, 0, h);
         gradient.addColorStop(0, 'rgba(11, 19, 43, 0.95)');
@@ -78,8 +114,10 @@ export class HorizonRenderer {
         ctx.moveTo(0, h - waterHeight);
         ctx.lineTo(w, h - waterHeight);
         ctx.stroke();
+    }
 
-        // Draw expanding water ripples from overhead explosions
+    drawWaterRipples(ctx, w, h, waterRipples) {
+        const waterHeight = 70;
         for (let i = waterRipples.length - 1; i >= 0; i--) {
             const r = waterRipples[i];
             r.radius += 1.2;
@@ -125,10 +163,13 @@ export class HorizonRenderer {
         ctx.closePath();
         ctx.fill();
 
-        // Glowing torch flame
+        // Optimized torch flame (zero shadowBlur, soft additive circle instead)
+        ctx.fillStyle = 'rgba(255, 60, 0, 0.4)';
+        ctx.beginPath();
+        ctx.arc(mx - 20, h - 133, 8, 0, Math.PI * 2);
+        ctx.fill();
+
         ctx.fillStyle = '#FFD700';
-        ctx.shadowColor = '#FF3300';
-        ctx.shadowBlur = 15;
         ctx.beginPath();
         ctx.arc(mx - 20, h - 133, 3.5, 0, Math.PI * 2);
         ctx.fill();

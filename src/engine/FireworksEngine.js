@@ -215,6 +215,7 @@ export class FireworksEngine {
             star.update();
             star.draw(this.ctx);
         });
+        this.ctx.globalAlpha = 1.0;
 
         // 3. Automated party show logic
         if (this.config.autoShow) {
@@ -252,8 +253,9 @@ export class FireworksEngine {
             }
         }
 
-        // 5. Restore standard blending for horizon silhouettes and water ripples
+        // 5. Restore standard blending and full alpha for horizon silhouettes and water ripples
         this.ctx.globalCompositeOperation = 'source-over';
+        this.ctx.globalAlpha = 1.0;
         this.horizonRenderer.draw(this.ctx, this.config.horizon, this.canvas.width, this.canvas.height, this.waterRipples);
     }
 }

@@ -70,8 +70,7 @@ export class Particle {
     draw(ctx) {
         if (this.alpha <= 0) return;
 
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, this.alpha);
+        ctx.globalAlpha = Math.max(0, Math.min(1, this.alpha));
         
         // Draw glowing trail from position history
         if (this.history.length > 1) {
@@ -81,29 +80,30 @@ export class Particle {
                 const pt = this.history[i];
                 ctx.lineTo(pt.x, pt.y);
             }
-            ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.alpha * 0.5})`;
+            ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.alpha * 0.45})`;
             ctx.lineWidth = this.size * 0.8;
             ctx.lineCap = 'round';
             ctx.stroke();
         }
 
-        // Draw luminous particle head
+        // 1. Draw soft outer additive glow halo (replaces expensive Gaussian shadowBlur)
+        ctx.fillStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.alpha * 0.28})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 2.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 2. Draw luminous main particle head
         ctx.fillStyle = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
-        ctx.shadowColor = this.color.hex;
-        ctx.shadowBlur = 8;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
 
-        // Extra white core for super-hot spark glow
-        if (this.alpha > 0.5) {
+        // 3. Draw extra white hot core for super-hot spark glow
+        if (this.alpha > 0.35) {
             ctx.fillStyle = '#FFFFFF';
-            ctx.shadowBlur = 2;
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size * 0.4, 0, Math.PI * 2);
+            ctx.arc(this.x, this.y, this.size * 0.45, 0, Math.PI * 2);
             ctx.fill();
         }
-
-        ctx.restore();
     }
 }
