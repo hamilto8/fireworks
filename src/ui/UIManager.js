@@ -18,6 +18,16 @@ export class UIManager {
     }
 
     initEventListeners() {
+        // Ensure Web Audio API context is resumed on ANY user interaction so SFX play immediately by default
+        const resumeAudio = () => {
+            if (this.sound && this.sound.enabled) {
+                this.sound.ensureResumed();
+            }
+        };
+        window.addEventListener('pointerdown', resumeAudio, { passive: true });
+        window.addEventListener('touchstart', resumeAudio, { passive: true });
+        window.addEventListener('keydown', resumeAudio, { passive: true });
+
         // Canvas interaction
         this.engine.canvas.addEventListener('pointerdown', (e) => this.handleCanvasClick(e));
 
