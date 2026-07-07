@@ -138,7 +138,16 @@
 
     <!-- BOTTOM CONTROL PANEL (Fluid width to prevent edge clipping on M1 Macs & tablets) -->
     <footer id="controlPanel" class="fixed bottom-4 sm:bottom-6 left-3 right-3 sm:left-6 sm:right-6 max-w-4xl mx-auto z-20 transition-all duration-300">
-        <div class="glass-panel rounded-3xl p-4 sm:p-5 border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex flex-col gap-4">
+        <!-- TOGGLE COLLAPSE TAB (Always accessible at bottom center to focus on fireworks) -->
+        <div class="flex justify-center -mb-px relative z-10">
+            <button id="btnToggleCollapse" class="glass-panel px-6 py-2 sm:px-8 sm:py-2.5 rounded-t-2xl border border-b-0 border-yellow-400/50 bg-slate-950/95 text-xs sm:text-sm font-bold text-yellow-300 hover:text-white flex items-center gap-2 sm:gap-2.5 shadow-[0_-4px_25px_rgba(0,0,0,0.8)] hover:bg-slate-900 active:scale-95 transition-all cursor-pointer group" title="Toggle Controls Panel (H)">
+                <span id="collapseIcon" class="text-xs sm:text-sm transition-transform duration-300">▼</span>
+                <span id="collapseText" class="tracking-wide">Hide Controls</span>
+                <kbd class="px-1.5 py-0.5 bg-white/10 rounded text-[10px] text-slate-300 font-mono hidden sm:inline">H</kbd>
+            </button>
+        </div>
+        <!-- MAIN CONTROLS CARD CONTAINER -->
+        <div id="controlPanelCard" class="glass-panel rounded-3xl rounded-t-xl p-4 sm:p-5 border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex flex-col gap-4 transition-all duration-500 ease-in-out max-h-[800px] overflow-hidden opacity-100">
             
             <!-- Row 1: Primary Action Buttons (Full Width 3-Column Grid) -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">

@@ -122,3 +122,16 @@ select {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+/* Collapsible UI Panel Animation */
+.card-collapsed {
+    max-height: 0 !important;
+    opacity: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    border-width: 0 !important;
+    pointer-events: none !important;
+}
+

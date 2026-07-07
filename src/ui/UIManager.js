@@ -35,6 +35,7 @@ export class UIManager {
         this.bindClick('btnNextTrivia', () => this.nextTrivia());
         this.bindClick('btnCapture', () => this.captureScreenshot());
         this.bindClick('btnToggleUI', () => this.toggleUI());
+        this.bindClick('btnToggleCollapse', () => this.toggleUI());
         this.bindClick('btnRandomizeWind', () => this.randomizeWind());
 
         // Instruction Badge click
@@ -252,28 +253,35 @@ export class UIManager {
         this.engine.updateConfig('uiVisible', newState);
 
         const header = document.getElementById('topHeader');
-        const panel = document.getElementById('controlPanel');
+        const card = document.getElementById('controlPanelCard');
+        const icon = document.getElementById('collapseIcon');
+        const text = document.getElementById('collapseText');
+        const eyeBtn = document.getElementById('btnToggleUI');
 
         if (newState) {
+            // Expand controls panel
             if (header) {
                 header.style.opacity = '1';
                 header.style.pointerEvents = 'auto';
             }
-            if (panel) {
-                panel.style.opacity = '1';
-                panel.style.pointerEvents = 'auto';
-                panel.style.transform = 'translateY(0)';
+            if (card) {
+                card.classList.remove('card-collapsed');
             }
+            if (icon) icon.textContent = '▼';
+            if (text) text.textContent = 'Hide Controls';
+            if (eyeBtn) eyeBtn.classList.remove('text-yellow-400', 'bg-yellow-500/20');
         } else {
+            // Collapse controls so user can focus on fireworks
             if (header) {
                 header.style.opacity = '0';
                 header.style.pointerEvents = 'none';
             }
-            if (panel) {
-                panel.style.opacity = '0';
-                panel.style.pointerEvents = 'none';
-                panel.style.transform = 'translateY(20px)';
+            if (card) {
+                card.classList.add('card-collapsed');
             }
+            if (icon) icon.textContent = '▲';
+            if (text) text.textContent = 'Show Controls';
+            if (eyeBtn) eyeBtn.classList.add('text-yellow-400', 'bg-yellow-500/20');
         }
     }
 
